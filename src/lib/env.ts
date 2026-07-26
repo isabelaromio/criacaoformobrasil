@@ -41,4 +41,13 @@ export const env = {
   get RESEND_FROM_EMAIL() {
     return process.env.RESEND_FROM_EMAIL || "Formô Brasil <onboarding@resend.dev>";
   },
+  // Segredo usado para assinar (HMAC) o link mágico de login e o cookie de
+  // sessão do portal do cliente — não é chave de API de terceiro, só precisa
+  // ser uma string longa e aleatória própria deste projeto.
+  get AUTH_SECRET() {
+    return required("AUTH_SECRET");
+  },
+  get APP_URL() {
+    return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  },
 };

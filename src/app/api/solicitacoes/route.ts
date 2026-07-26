@@ -19,7 +19,7 @@ const MAX_TAMANHO_ANEXO = 25 * 1024 * 1024; // 25MB
 
 const camposComunsSchema = z.object({
   turma: z.string().trim().min(2).max(120),
-  email: z.string().trim().email().max(200),
+  email: z.string().trim().email().max(200).toLowerCase(),
   tipoSolicitacaoSlug: z.string().trim().min(1),
   instagramDaTurma: z.string().trim().url().max(200),
   unidadeOptionId: z.enum(

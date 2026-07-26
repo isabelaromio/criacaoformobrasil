@@ -127,6 +127,59 @@ export type TaskDetalhada = {
   anexos: { title: string; url: string }[];
 };
 
+export type TaskDoPortal = {
+  id: string;
+  name: string;
+  url: string;
+  status: string;
+  dataCriacao: string;
+  anexos: { title: string; url: string }[];
+};
+
+// Busca as tasks da lista "Solicitações Criação Formô" cujo campo
+// "E-mail de Contato" bate com o e-mail do cliente logado. É essa
+// comparação — e não uma lista separada de turmas cadastradas — que
+// autoriza o acesso: quem já abriu uma solicitação com aquele e-mail
+// enxerga a task.
+export async function buscarTasksPorEmail(email: string): Promise<TaskDoPortal[]> {
+  const filtro = encodeURIComponent(
+    JSON.stringify([{ field_id: CLICKUP_FIELD_EMAIL_CONTATO, operator: "=", value: email }])
+  );
+
+  const data = await clickupFetch(
+    `/list/${env.CLICKUP_LIST_ID}/task?include_closed=true&custom_fields=${filtro}`,
+    { method: "GET" }
+  );
+
+  const tasks: {
+    id: string;
+    name: string;
+    url: string;
+    status?: { status?: string };
+    date_created?: string;
+  }[] = data.tasks ?? [];
+
+  // O endpoint de listagem não traz anexos — só o de task individual.
+  // Busca o detalhe (com anexos) apenas das tasks já finalizadas, que são
+  // as únicas onde o cliente precisa dos links de download.
+  return Promise.all(
+    tasks.map(async (task) => {
+      const status = task.status?.status ?? "";
+      const finalizada = status.toLowerCase() === env.CLICKUP_STATUS_FINALIZADO.toLowerCase();
+      const anexos = finalizada ? (await buscarTaskDetalhada(task.id)).anexos : [];
+
+      return {
+        id: task.id,
+        name: task.name,
+        url: task.url,
+        status,
+        dataCriacao: task.date_created ?? "",
+        anexos,
+      };
+    })
+  );
+}
+
 export async function buscarTaskDetalhada(taskId: string): Promise<TaskDetalhada> {
   const task = await clickupFetch(
     `/task/${taskId}?include_subtasks=false`,
