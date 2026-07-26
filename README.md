@@ -47,11 +47,11 @@ lista "Solicitações Criação Formô") — ver `.env.local.example` para os va
 ## Ordem de build (não pular etapas)
 
 1. ✅ Esqueleto do projeto
-2. ✅ Rota de criação de task no ClickUp (testada com task real, criada e apagada em
-   seguida — ver histórico da sessão)
-3. ⏳ Formulário do cliente
-4. ⏳ Webhook "Finalizado" → e-mail de entrega
-5. ⏳ Autenticação do cliente (magic link + allowlist)
-6. ⏳ Sincronização do chat com comentários da task
-7. ⏳ Teste ponta a ponta local
+2. ✅ Rota de criação de task no ClickUp
+3. ✅ Formulário do cliente (guiado por schema, por tipo de solicitação)
+4. ✅ Webhook "Finalizado" → e-mail de entrega (Resend)
+5. ✅ Autenticação do cliente (magic link, sem allowlist separada — compara com
+   "E-mail de Contato" das tasks do próprio cliente no ClickUp)
+6. ✅ Sincronização do chat com comentários da task
+7. ✅ Teste ponta a ponta (contra a lista real do ClickUp)
 8. ⏳ Deploy em produção
