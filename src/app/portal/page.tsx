@@ -1,6 +1,6 @@
-import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { SESSION_COOKIE_NAME, verificarTokenSessao } from "@/lib/auth";
+import { obterEmailSessao } from "@/lib/auth";
 import { buscarTasksPorEmail } from "@/lib/clickup";
 import { FormoLogo } from "@/components/FormoLogo";
 import { PixelCursor } from "@/components/PixelCursor";
@@ -13,9 +13,7 @@ function formatarData(dataCriacao: string): string {
 }
 
 export default async function PortalPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  const email = token ? verificarTokenSessao(token) : null;
+  const email = await obterEmailSessao();
 
   if (!email) {
     redirect("/login");
@@ -103,6 +101,12 @@ export default async function PortalPage() {
                       A equipe vai anexar os arquivos em instantes.
                     </p>
                   )}
+                  <Link
+                    href={`/portal/${task.id}`}
+                    className="mt-3 inline-block text-sm font-medium text-formo-blue underline"
+                  >
+                    Ver detalhes e conversar →
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -122,6 +126,12 @@ export default async function PortalPage() {
                   <p className="mt-1 text-xs uppercase tracking-wide text-navy/60">
                     {task.status}
                   </p>
+                  <Link
+                    href={`/portal/${task.id}`}
+                    className="mt-2 inline-block text-sm font-medium text-formo-blue underline"
+                  >
+                    Ver detalhes e conversar →
+                  </Link>
                 </li>
               ))}
             </ul>

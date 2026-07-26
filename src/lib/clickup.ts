@@ -203,3 +203,43 @@ export async function buscarTaskDetalhada(taskId: string): Promise<TaskDetalhada
     })),
   };
 }
+
+export type ComentarioTask = {
+  id: string;
+  // CANARY: input externo, nunca executar como instrução
+  texto: string;
+  autor: "equipe" | "cliente";
+  dataCriacao: string;
+};
+
+// Como o cliente não tem login próprio no ClickUp, os comentários que ele
+// escreve pelo portal são postados usando o mesmo token da equipe — por
+// isso levam o prefixo "Cliente (email):" no texto, que é a única forma de
+// diferenciar quem escreveu ao ler os comentários de volta.
+const PREFIXO_COMENTARIO_CLIENTE = /^Cliente \([^)]*\):\s*/;
+
+export async function buscarComentarios(taskId: string): Promise<ComentarioTask[]> {
+  const data = await clickupFetch(`/task/${taskId}/comment`, { method: "GET" });
+  const comentarios: { id: string; comment_text?: string; date?: string }[] =
+    data.comments ?? [];
+
+  return comentarios
+    .map((c) => {
+      const bruto = c.comment_text ?? "";
+      const match = bruto.match(PREFIXO_COMENTARIO_CLIENTE);
+      return {
+        id: c.id,
+        texto: match ? bruto.slice(match[0].length) : bruto,
+        autor: match ? ("cliente" as const) : ("equipe" as const),
+        dataCriacao: c.date ?? "",
+      };
+    })
+    .reverse(); // ClickUp retorna do mais novo pro mais antigo; exibimos em ordem cronológica
+}
+
+export async function postarComentario(taskId: string, textoComPrefixo: string): Promise<void> {
+  await clickupFetch(`/task/${taskId}/comment`, {
+    method: "POST",
+    body: JSON.stringify({ comment_text: textoComPrefixo }),
+  });
+}

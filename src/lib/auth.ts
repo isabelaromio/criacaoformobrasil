@@ -1,5 +1,6 @@
 import "server-only";
 import crypto from "node:crypto";
+import { cookies } from "next/headers";
 import { env } from "@/lib/env";
 
 // Login sem banco de dados externo: o "link mágico" e o cookie de sessão
@@ -77,4 +78,12 @@ export function gerarTokenSessao(email: string): string {
 
 export function verificarTokenSessao(token: string): string | null {
   return verificar(token, "sessao");
+}
+
+// Lê e valida o cookie de sessão da requisição atual. Usado em Server
+// Components e Route Handlers do portal para saber quem está logado.
+export async function obterEmailSessao(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  return token ? verificarTokenSessao(token) : null;
 }
