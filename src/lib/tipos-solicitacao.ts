@@ -25,36 +25,14 @@ export function findTipoSolicitacao(slug: string): TipoSolicitacao | undefined {
   return TIPOS_SOLICITACAO.find((t) => t.slug === slug);
 }
 
-// Campos específicos do tipo "Posts Instagram", espelhando o briefing que a
-// equipe já usa hoje dentro do ClickUp. Os outros 9 tipos ainda usam o campo
-// de briefing livre genérico, até termos o modelo de cada um confirmado.
-export const TAMANHOS_ARTE_POSTS_INSTAGRAM = [
-  { label: "Feed - 1080x1350", clickupOptionId: "eb2d8e9b-eeca-491c-aca7-4d5288c01d31" },
-  { label: "Story - 1080x1920", clickupOptionId: "0affb290-3b31-43a1-a03a-ed789385645b" },
-  { label: "Feed e Story", clickupOptionId: "6502faea-520b-4cf7-9aac-10376d6fd7f5" },
+// Campos comuns a todos os tipos de solicitação (aparecem em todo formulário
+// do ClickUp que a usuária mandou).
+export const CLICKUP_FIELD_INSTAGRAM_DA_TURMA = "a2f8473a-017d-4a9d-a47a-1fd17625bf5f";
+export const CLICKUP_FIELD_UNIDADE = "2384ad3c-a162-4269-85a6-cfb968a5001f";
+
+export const OPCOES_UNIDADE = [
+  { label: "São Paulo", clickupOptionId: "005c746c-6e39-4c6a-843a-bc6f808fea09" },
+  { label: "Campinas", clickupOptionId: "f29ce32a-1de6-4cd5-90c7-0765dca18853" },
+  { label: "Presidente Prudente", clickupOptionId: "fdd41aec-266f-4fca-b80e-4661f9f1a1b3" },
+  { label: "Rio de Janeiro", clickupOptionId: "84da02d4-8149-445c-99ab-c7df5a276d7f" },
 ] as const;
-
-export const CAMPOS_CLICKUP_POSTS_INSTAGRAM = {
-  instagramDaTurma: "a2f8473a-017d-4a9d-a47a-1fd17625bf5f",
-  tamanhoDaArte: "e3c7b189-61f9-49f3-87de-6a39d07b5e87",
-  post: "8eec7387-d3ac-40e5-b62f-b038c3f7cb48",
-} as const;
-
-export const ORIENTACOES_POST_INSTAGRAM = `Como preencher a descrição do post:
-
-POST 01
-TÍTULO:
-SUBTÍTULO:
-TEXTO:
-
-POST 02
-TÍTULO:
-SUBTÍTULO:
-TEXTO:
-
-Se achar necessário, acrescente:
-COR DO POST:
-ELEMENTOS VISUAIS:
-REFERÊNCIAS: (adicione o link ou a imagem nos anexos)
-
-Para posts carrossel, use TELA 01, TELA 02, TELA 03... no lugar de POST.`;
