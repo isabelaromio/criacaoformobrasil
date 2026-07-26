@@ -7,6 +7,7 @@ import {
 } from "@/lib/clickup";
 import { BRIEFINGS_POR_TIPO, type CampoEspecifico } from "@/lib/briefings";
 import {
+  CLICKUP_FIELD_EMAIL_CONTATO,
   CLICKUP_FIELD_INSTAGRAM_DA_TURMA,
   CLICKUP_FIELD_UNIDADE,
   findTipoSolicitacao,
@@ -18,6 +19,7 @@ const MAX_TAMANHO_ANEXO = 25 * 1024 * 1024; // 25MB
 
 const camposComunsSchema = z.object({
   turma: z.string().trim().min(2).max(120),
+  email: z.string().trim().email().max(200),
   tipoSolicitacaoSlug: z.string().trim().min(1),
   instagramDaTurma: z.string().trim().url().max(200),
   unidadeOptionId: z.enum(
@@ -93,9 +95,14 @@ export async function POST(request: Request) {
   }
 
   const camposComuns = Object.fromEntries(
-    ["turma", "tipoSolicitacaoSlug", "instagramDaTurma", "unidadeOptionId", "prazoDesejado"].map(
-      (chave) => [chave, formData.get(chave)]
-    )
+    [
+      "turma",
+      "email",
+      "tipoSolicitacaoSlug",
+      "instagramDaTurma",
+      "unidadeOptionId",
+      "prazoDesejado",
+    ].map((chave) => [chave, formData.get(chave)])
   );
 
   const parsedComuns = camposComunsSchema.safeParse(camposComuns);
@@ -105,7 +112,7 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
-  const { turma, tipoSolicitacaoSlug, instagramDaTurma, unidadeOptionId, prazoDesejado } =
+  const { turma, email, tipoSolicitacaoSlug, instagramDaTurma, unidadeOptionId, prazoDesejado } =
     parsedComuns.data;
 
   const tipo = findTipoSolicitacao(tipoSolicitacaoSlug);
@@ -136,6 +143,7 @@ export async function POST(request: Request) {
   const camposExtras: CampoCustomizado[] = [
     { id: CLICKUP_FIELD_INSTAGRAM_DA_TURMA, value: instagramDaTurma },
     { id: CLICKUP_FIELD_UNIDADE, value: unidadeOptionId },
+    { id: CLICKUP_FIELD_EMAIL_CONTATO, value: email },
   ];
 
   let descricao: string;

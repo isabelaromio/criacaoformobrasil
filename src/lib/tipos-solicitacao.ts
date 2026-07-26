@@ -32,6 +32,9 @@ export function findTipoSolicitacao(slug: string): TipoSolicitacao | undefined {
 // do ClickUp que a usuária mandou).
 export const CLICKUP_FIELD_INSTAGRAM_DA_TURMA = "a2f8473a-017d-4a9d-a47a-1fd17625bf5f";
 export const CLICKUP_FIELD_UNIDADE = "2384ad3c-a162-4269-85a6-cfb968a5001f";
+// Usado pela etapa 4 (aviso de entrega): é pra onde mandamos o e-mail
+// quando a task vira "Finalizado".
+export const CLICKUP_FIELD_EMAIL_CONTATO = "3b221f1a-9f33-412e-88b9-0e1750909c7a";
 
 export const OPCOES_UNIDADE = [
   { label: "Campinas", clickupOptionId: "f29ce32a-1de6-4cd5-90c7-0765dca18853" },

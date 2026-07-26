@@ -168,6 +168,7 @@ export function SolicitacaoForm() {
   const [tipoSlug, setTipoSlug] = useState<string | null>(null);
 
   const [turma, setTurma] = useState("");
+  const [email, setEmail] = useState("");
   const [instagramDaTurma, setInstagramDaTurma] = useState("");
   const [unidadeOptionId, setUnidadeOptionId] = useState("");
   const [prazoDesejado, setPrazoDesejado] = useState("");
@@ -204,6 +205,7 @@ export function SolicitacaoForm() {
 
     const formData = new FormData();
     formData.set("turma", turma);
+    formData.set("email", email);
     formData.set("tipoSolicitacaoSlug", tipoSlug);
     formData.set("instagramDaTurma", instagramDaTurma);
     formData.set("unidadeOptionId", unidadeOptionId);
@@ -329,6 +331,25 @@ export function SolicitacaoForm() {
           placeholder="Ex: Medicina UniX 2027"
           className={inputClass}
         />
+      </div>
+
+      <div>
+        <label htmlFor="email" className="block text-sm font-semibold text-navy">
+          Seu e-mail
+        </label>
+        <input
+          id="email"
+          type="email"
+          required
+          maxLength={200}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="voce@exemplo.com"
+          className={inputClass}
+        />
+        <p className="mt-1.5 text-xs text-navy/60">
+          É pra esse e-mail que avisamos quando a arte estiver pronta.
+        </p>
       </div>
 
       <div>

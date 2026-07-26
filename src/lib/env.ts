@@ -26,4 +26,19 @@ export const env = {
   get CLICKUP_STATUS_INICIAL() {
     return process.env.CLICKUP_STATUS_INICIAL || "briefings";
   },
+  get CLICKUP_STATUS_FINALIZADO() {
+    return process.env.CLICKUP_STATUS_FINALIZADO || "finalizado";
+  },
+  // Segredo do webhook, obtido só depois de registrar o webhook no ClickUp
+  // (etapa de deploy). Enquanto não existe, a verificação de assinatura é
+  // pulada — não deve ficar assim em produção.
+  get CLICKUP_WEBHOOK_SECRET() {
+    return process.env.CLICKUP_WEBHOOK_SECRET || "";
+  },
+  get RESEND_API_KEY() {
+    return required("RESEND_API_KEY");
+  },
+  get RESEND_FROM_EMAIL() {
+    return process.env.RESEND_FROM_EMAIL || "Formô Brasil <onboarding@resend.dev>";
+  },
 };

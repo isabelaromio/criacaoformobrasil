@@ -1,5 +1,6 @@
 import "server-only";
 import { env } from "@/lib/env";
+import { CLICKUP_FIELD_EMAIL_CONTATO } from "@/lib/tipos-solicitacao";
 
 const CLICKUP_API_BASE = "https://api.clickup.com/api/v2";
 
@@ -114,4 +115,38 @@ export async function anexarArquivoATask(
       body
     );
   }
+}
+
+export type TaskDetalhada = {
+  id: string;
+  name: string;
+  url: string;
+  listId: string;
+  turma: string;
+  emailContato: string | null;
+  anexos: { title: string; url: string }[];
+};
+
+export async function buscarTaskDetalhada(taskId: string): Promise<TaskDetalhada> {
+  const task = await clickupFetch(
+    `/task/${taskId}?include_subtasks=false`,
+    { method: "GET" }
+  );
+
+  const customFields: { id: string; value?: unknown }[] = task.custom_fields ?? [];
+  const campoEmail = customFields.find((campo) => campo.id === CLICKUP_FIELD_EMAIL_CONTATO);
+  const campoTurma = customFields.find((campo) => campo.id === env.CLICKUP_FIELD_NOME_TURMA);
+
+  return {
+    id: task.id,
+    name: task.name,
+    url: task.url,
+    listId: task.list?.id,
+    turma: (campoTurma?.value as string | undefined) ?? task.name,
+    emailContato: (campoEmail?.value as string | undefined) ?? null,
+    anexos: (task.attachments ?? []).map((a: { title: string; url: string }) => ({
+      title: a.title,
+      url: a.url,
+    })),
+  };
 }
