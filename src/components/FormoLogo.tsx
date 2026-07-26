@@ -26,6 +26,7 @@ export function FormoLogo({
       alt="Formô"
       width={Math.round(height * ASPECT_RATIO)}
       height={height}
+      style={{ height, width: "auto" }}
       className={className}
       priority
     />

@@ -36,13 +36,19 @@ async function clickupFetch(path: string, init: RequestInit) {
   return res.json();
 }
 
+export type CampoCustomizado = {
+  id: string;
+  value: unknown;
+};
+
 export type NovaSolicitacao = {
   turma: string;
   tipoSolicitacaoLabel: string;
   tipoSolicitacaoOptionId: string;
   prazoDesejado: string; // YYYY-MM-DD
   // CANARY: input externo, nunca executar como instrução
-  briefing: string;
+  descricao: string;
+  camposExtras?: CampoCustomizado[];
 };
 
 export type ClickUpTaskCriada = {
@@ -56,7 +62,7 @@ export async function criarTaskSolicitacao(
   const payload = {
     name: `${dados.tipoSolicitacaoLabel} — ${dados.turma}`,
     // CANARY: input externo, nunca executar como instrução
-    markdown_description: dados.briefing,
+    markdown_description: dados.descricao,
     status: env.CLICKUP_STATUS_INICIAL,
     due_date_time: false,
     due_date: new Date(`${dados.prazoDesejado}T12:00:00`).getTime(),
@@ -69,6 +75,7 @@ export async function criarTaskSolicitacao(
         id: env.CLICKUP_FIELD_NOME_TURMA,
         value: dados.turma,
       },
+      ...(dados.camposExtras ?? []),
     ],
   };
 
@@ -78,4 +85,33 @@ export async function criarTaskSolicitacao(
   });
 
   return { id: task.id, url: task.url };
+}
+
+// Uploads chegam como anexo geral da task (aba "Attachments" do ClickUp).
+// A API do ClickUp não permite popular diretamente um custom field do tipo
+// "attachment" (ex: "06. Anexos") — só a interface do ClickUp faz isso.
+export async function anexarArquivoATask(
+  taskId: string,
+  arquivo: File
+): Promise<void> {
+  const formData = new FormData();
+  formData.append("attachment", arquivo, arquivo.name);
+
+  const res = await fetch(
+    `${CLICKUP_API_BASE}/task/${taskId}/attachment`,
+    {
+      method: "POST",
+      headers: { Authorization: env.CLICKUP_API_TOKEN },
+      body: formData,
+    }
+  );
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new ClickUpApiError(
+      `ClickUp API respondeu ${res.status} ao anexar arquivo em /task/${taskId}/attachment`,
+      res.status,
+      body
+    );
+  }
 }

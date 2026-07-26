@@ -11,6 +11,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-codec-cold);
 
   --color-mustard: #fbb958;
   --color-coral: #f06654;
@@ -26,4 +27,37 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* --- Estética Y2K/vintage blur --- */
+
+/* Fundo com gradiente de céu desbotado (referência VHS) + grão sutil */
+.y2k-backdrop {
+  background:
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(95, 201, 234, 0.55), transparent 60%),
+    linear-gradient(180deg, #bfe6f5 0%, var(--background) 42%);
+}
+
+.y2k-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Glow sonhador atrás dos títulos de destaque */
+.y2k-glow {
+  position: absolute;
+  inset: 0;
+  filter: blur(14px);
+  opacity: 0.45;
+  user-select: none;
+  pointer-events: none;
+}
+
+.y2k-chrome-border {
+  border-image: linear-gradient(135deg, #ffffff, #fbb958 35%, #ffffff 60%, #5fc9ea) 1;
 }
