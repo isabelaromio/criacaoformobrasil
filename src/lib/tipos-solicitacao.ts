@@ -31,8 +31,8 @@ export const CLICKUP_FIELD_INSTAGRAM_DA_TURMA = "a2f8473a-017d-4a9d-a47a-1fd1762
 export const CLICKUP_FIELD_UNIDADE = "2384ad3c-a162-4269-85a6-cfb968a5001f";
 
 export const OPCOES_UNIDADE = [
-  { label: "São Paulo", clickupOptionId: "005c746c-6e39-4c6a-843a-bc6f808fea09" },
   { label: "Campinas", clickupOptionId: "f29ce32a-1de6-4cd5-90c7-0765dca18853" },
   { label: "Presidente Prudente", clickupOptionId: "fdd41aec-266f-4fca-b80e-4661f9f1a1b3" },
+  { label: "São Paulo", clickupOptionId: "005c746c-6e39-4c6a-843a-bc6f808fea09" },
   { label: "Rio de Janeiro", clickupOptionId: "84da02d4-8149-445c-99ab-c7df5a276d7f" },
 ] as const;

@@ -50,13 +50,12 @@ export const BRIEFINGS_POR_TIPO: Partial<Record<string, BriefingTipo>> = {
       {
         tipo: "select",
         chave: "tamanhoArte",
-        label: "Tamanho da arte",
+        label: "Formato do post",
         clickupFieldId: "e3c7b189-61f9-49f3-87de-6a39d07b5e87",
         formatoClickup: "labels",
         opcoes: [
-          { label: "Feed - 1080x1350", clickupOptionId: "eb2d8e9b-eeca-491c-aca7-4d5288c01d31" },
-          { label: "Story - 1080x1920", clickupOptionId: "0affb290-3b31-43a1-a03a-ed789385645b" },
-          { label: "Feed e Story", clickupOptionId: "6502faea-520b-4cf7-9aac-10376d6fd7f5" },
+          { label: "Feed (1080x1350)", clickupOptionId: "eb2d8e9b-eeca-491c-aca7-4d5288c01d31" },
+          { label: "Stories (1080x1920)", clickupOptionId: "0affb290-3b31-43a1-a03a-ed789385645b" },
         ],
         obrigatorio: true,
       },

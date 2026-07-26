@@ -2,10 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { BRIEFINGS_POR_TIPO, type CampoEspecifico } from "@/lib/briefings";
-import {
-  OPCOES_UNIDADE,
-  TIPOS_SOLICITACAO,
-} from "@/lib/tipos-solicitacao";
+import { OPCOES_UNIDADE, TIPOS_SOLICITACAO } from "@/lib/tipos-solicitacao";
 
 type Status =
   | { state: "idle" }
@@ -15,11 +12,38 @@ type Status =
 
 type ValorCampo = string | string[];
 
+const FEED_OPTION_ID = "eb2d8e9b-eeca-491c-aca7-4d5288c01d31";
+const STORY_OPTION_ID = "0affb290-3b31-43a1-a03a-ed789385645b";
+
 const inputClass =
   "mt-1.5 w-full rounded-lg border border-navy/20 bg-white/90 px-4 py-2.5 text-navy shadow-[inset_0_1px_2px_rgba(59,79,130,0.08)] placeholder:text-navy/40 focus:border-coral focus:outline-none focus:ring-2 focus:ring-coral/30";
 
 const cardClass =
   "space-y-6 rounded-2xl border border-white/70 bg-white/85 p-6 shadow-[0_8px_30px_rgba(59,79,130,0.15)] backdrop-blur-sm sm:p-8";
+
+function BotaoEscolha({
+  selecionado,
+  onClick,
+  children,
+}: {
+  selecionado: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+        selecionado
+          ? "border-coral bg-coral/10 text-coral"
+          : "border-navy/20 bg-white/90 text-navy hover:border-navy/40"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
 
 function CampoEspecificoInput({
   campo,
@@ -141,8 +165,9 @@ function CampoEspecificoInput({
 }
 
 export function SolicitacaoForm() {
+  const [tipoSlug, setTipoSlug] = useState<string | null>(null);
+
   const [turma, setTurma] = useState("");
-  const [tipoSlug, setTipoSlug] = useState(TIPOS_SOLICITACAO[0].slug);
   const [instagramDaTurma, setInstagramDaTurma] = useState("");
   const [unidadeOptionId, setUnidadeOptionId] = useState("");
   const [prazoDesejado, setPrazoDesejado] = useState("");
@@ -150,17 +175,31 @@ export function SolicitacaoForm() {
   const [valoresEspecificos, setValoresEspecificos] = useState<Record<string, ValorCampo>>({});
   const [anexos, setAnexos] = useState<File[]>([]);
 
+  // Só usado em "Posts Instagram": não vira custom field próprio, só ajusta
+  // qual orientação mostrar e prefixa o conteúdo do post enviado.
+  const [feedTipo, setFeedTipo] = useState<"unico" | "carrossel" | "">("");
+
   const [status, setStatus] = useState<Status>({ state: "idle" });
 
-  const briefingTipo = BRIEFINGS_POR_TIPO[tipoSlug];
+  const tipo = tipoSlug ? TIPOS_SOLICITACAO.find((t) => t.slug === tipoSlug) : undefined;
+  const briefingTipo = tipoSlug ? BRIEFINGS_POR_TIPO[tipoSlug] : undefined;
+  const ehPostsInstagram = tipoSlug === "posts-instagram";
 
-  function trocarTipo(novoSlug: string) {
-    setTipoSlug(novoSlug);
+  function escolherTipo(slug: string) {
+    setTipoSlug(slug);
     setValoresEspecificos({});
+    setFeedTipo("");
+  }
+
+  function trocarTipo() {
+    setTipoSlug(null);
+    setValoresEspecificos({});
+    setFeedTipo("");
   }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!tipoSlug) return;
     setStatus({ state: "enviando" });
 
     const formData = new FormData();
@@ -172,7 +211,11 @@ export function SolicitacaoForm() {
 
     if (briefingTipo) {
       for (const campo of briefingTipo.camposEspecificos) {
-        const valor = valoresEspecificos[campo.chave];
+        let valor = valoresEspecificos[campo.chave];
+        if (ehPostsInstagram && campo.chave === "post" && feedTipo && typeof valor === "string") {
+          const rotulo = feedTipo === "carrossel" ? "Carrossel" : "Post único";
+          valor = `FORMATO: ${rotulo}\n\n${valor}`;
+        }
         if (Array.isArray(valor)) {
           valor.forEach((v) => formData.append(campo.chave, v));
         } else {
@@ -232,14 +275,49 @@ export function SolicitacaoForm() {
     );
   }
 
+  // Etapa 1: escolher a categoria — mantém a página curta antes disso.
+  if (!tipo) {
+    return (
+      <div className={cardClass}>
+        <p className="text-sm font-semibold text-navy">
+          O que você precisa hoje?
+        </p>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {TIPOS_SOLICITACAO.map((t) => (
+            <button
+              key={t.slug}
+              type="button"
+              onClick={() => escolherTipo(t.slug)}
+              className="flex flex-col items-start gap-1 rounded-xl border border-navy/15 bg-white/90 p-4 text-left transition hover:border-coral hover:bg-coral/5"
+            >
+              <span className="font-display text-lg text-navy">{t.label}</span>
+              <span className="text-xs text-navy/60">{t.prazoSugerido}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   const hoje = new Date().toISOString().slice(0, 10);
   const enviando = status.state === "enviando";
 
   return (
     <form onSubmit={handleSubmit} className={cardClass}>
+      <div className="flex items-center justify-between">
+        <span className="font-display text-lg text-navy">{tipo.label}</span>
+        <button
+          type="button"
+          onClick={trocarTipo}
+          className="text-xs font-medium text-navy/60 underline hover:text-coral"
+        >
+          Trocar tipo
+        </button>
+      </div>
+
       <div>
         <label htmlFor="turma" className="block text-sm font-semibold text-navy">
-          1. Nome da turma
+          Nome da turma
         </label>
         <input
           id="turma"
@@ -255,7 +333,7 @@ export function SolicitacaoForm() {
 
       <div>
         <label htmlFor="instagram" className="block text-sm font-semibold text-navy">
-          2. Instagram da turma
+          Instagram da turma
         </label>
         <input
           id="instagram"
@@ -267,24 +345,6 @@ export function SolicitacaoForm() {
           placeholder="https://www.instagram.com/comissao_..."
           className={inputClass}
         />
-      </div>
-
-      <div>
-        <label htmlFor="tipo" className="block text-sm font-semibold text-navy">
-          3. Tipo de solicitação
-        </label>
-        <select
-          id="tipo"
-          value={tipoSlug}
-          onChange={(e) => trocarTipo(e.target.value)}
-          className={inputClass}
-        >
-          {TIPOS_SOLICITACAO.map((t) => (
-            <option key={t.slug} value={t.slug}>
-              {t.label}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div>
@@ -324,18 +384,64 @@ export function SolicitacaoForm() {
         />
       </div>
 
+      {ehPostsInstagram && (
+        <div>
+          <span className="block text-sm font-semibold text-navy">Formato do post *</span>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            <BotaoEscolha
+              selecionado={valoresEspecificos.tamanhoArte === FEED_OPTION_ID}
+              onClick={() => {
+                setValoresEspecificos((atual) => ({ ...atual, tamanhoArte: FEED_OPTION_ID }));
+              }}
+            >
+              Feed (1080x1350)
+            </BotaoEscolha>
+            <BotaoEscolha
+              selecionado={valoresEspecificos.tamanhoArte === STORY_OPTION_ID}
+              onClick={() => {
+                setValoresEspecificos((atual) => ({ ...atual, tamanhoArte: STORY_OPTION_ID }));
+                setFeedTipo("");
+              }}
+            >
+              Stories (1080x1920)
+            </BotaoEscolha>
+          </div>
+
+          {valoresEspecificos.tamanhoArte === FEED_OPTION_ID && (
+            <div className="mt-3">
+              <span className="block text-sm font-semibold text-navy">
+                É um post único ou carrossel?
+              </span>
+              <div className="mt-1.5 flex flex-wrap gap-2">
+                <BotaoEscolha selecionado={feedTipo === "unico"} onClick={() => setFeedTipo("unico")}>
+                  Post único
+                </BotaoEscolha>
+                <BotaoEscolha
+                  selecionado={feedTipo === "carrossel"}
+                  onClick={() => setFeedTipo("carrossel")}
+                >
+                  Carrossel
+                </BotaoEscolha>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {briefingTipo ? (
         <>
-          {briefingTipo.camposEspecificos.map((campo) => (
-            <CampoEspecificoInput
-              key={campo.chave}
-              campo={campo}
-              valor={valoresEspecificos[campo.chave]}
-              onChange={(valor) =>
-                setValoresEspecificos((atual) => ({ ...atual, [campo.chave]: valor }))
-              }
-            />
-          ))}
+          {briefingTipo.camposEspecificos
+            .filter((campo) => !(ehPostsInstagram && campo.chave === "tamanhoArte"))
+            .map((campo) => (
+              <CampoEspecificoInput
+                key={campo.chave}
+                campo={campo}
+                valor={valoresEspecificos[campo.chave]}
+                onChange={(valor) =>
+                  setValoresEspecificos((atual) => ({ ...atual, [campo.chave]: valor }))
+                }
+              />
+            ))}
           {briefingTipo.orientacoes && (
             <details className="rounded-lg border border-navy/15 bg-cream/60 px-4 py-3 text-xs text-navy/70">
               <summary className="cursor-pointer font-semibold text-navy">
