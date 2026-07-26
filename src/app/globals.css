@@ -29,13 +29,35 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* --- Estética Y2K/vintage blur --- */
+/* --- Estética Y2K/vintage blur, versão alegre --- */
 
-/* Fundo com gradiente de céu desbotado (referência VHS) + grão sutil */
+/* Fundo com várias manchas coloridas suaves (mais vívido que o gradiente
+   único de céu original) + grão sutil por cima */
 .y2k-backdrop {
   background:
-    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(95, 201, 234, 0.55), transparent 60%),
-    linear-gradient(180deg, #bfe6f5 0%, var(--background) 42%);
+    radial-gradient(ellipse 60% 40% at 8% 0%, rgba(248, 197, 198, 0.65), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 95% 5%, rgba(95, 201, 234, 0.55), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(134, 184, 161, 0.4), transparent 65%),
+    radial-gradient(ellipse 120% 60% at 50% -10%, rgba(251, 185, 88, 0.35), transparent 60%),
+    var(--background);
+}
+
+/* Faixa colorida no topo, ecoando o arco-íris da identidade Formô */
+.formo-ribbon {
+  position: relative;
+  z-index: 10;
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-coral),
+    var(--color-mustard),
+    var(--color-sage),
+    var(--color-sky),
+    var(--color-blush),
+    var(--color-coral)
+  );
+  background-size: 200% 100%;
 }
 
 .y2k-grain {
@@ -43,9 +65,25 @@ body {
   inset: 0;
   z-index: 50;
   pointer-events: none;
-  opacity: 0.05;
+  opacity: 0.04;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Flutuação leve para alguns elementos decorativos de fundo */
+@keyframes formo-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(6deg); }
+}
+
+.formo-float {
+  animation: formo-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formo-float {
+    animation: none;
+  }
 }
 
 /* Glow sonhador atrás dos títulos de destaque */
