@@ -26,7 +26,6 @@ export function SolicitacaoForm() {
   const [briefing, setBriefing] = useState("");
 
   // Campos específicos de "Posts Instagram"
-  const [responsavel, setResponsavel] = useState("");
   const [instagramDaTurma, setInstagramDaTurma] = useState("");
   const [tamanhoArteOptionId, setTamanhoArteOptionId] = useState("");
   const [conteudoPost, setConteudoPost] = useState("");
@@ -46,7 +45,6 @@ export function SolicitacaoForm() {
     formData.set("prazoDesejado", prazoDesejado);
 
     if (ehPostsInstagram) {
-      formData.set("responsavel", responsavel);
       formData.set("instagramDaTurma", instagramDaTurma);
       formData.set("tamanhoArteOptionId", tamanhoArteOptionId);
       formData.set("conteudoPost", conteudoPost);
@@ -122,26 +120,6 @@ export function SolicitacaoForm() {
           className={inputClass}
         />
       </div>
-
-      {ehPostsInstagram && (
-        <div>
-          <label
-            htmlFor="responsavel"
-            className="block text-sm font-semibold text-navy"
-          >
-            Responsável
-          </label>
-          <input
-            id="responsavel"
-            required
-            maxLength={120}
-            value={responsavel}
-            onChange={(e) => setResponsavel(e.target.value)}
-            placeholder="Seu nome"
-            className={inputClass}
-          />
-        </div>
-      )}
 
       {ehPostsInstagram && (
         <div>

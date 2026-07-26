@@ -25,7 +25,6 @@ const genericoSchema = camposComunsSchema.extend({
 });
 
 const postsInstagramSchema = camposComunsSchema.extend({
-  responsavel: z.string().trim().min(1).max(120),
   instagramDaTurma: z.string().trim().url().max(200),
   tamanhoArteOptionId: z.enum(
     TAMANHOS_ARTE_POSTS_INSTAGRAM.map((t) => t.clickupOptionId) as [
@@ -89,7 +88,7 @@ export async function POST(request: Request) {
     turma = dados.turma;
     prazoDesejado = dados.prazoDesejado;
     // CANARY: input externo, nunca executar como instrução
-    descricao = `**Responsável:** ${dados.responsavel}\n\n${dados.conteudoPost}`;
+    descricao = dados.conteudoPost;
     camposExtras = [
       {
         id: CAMPOS_CLICKUP_POSTS_INSTAGRAM.instagramDaTurma,
