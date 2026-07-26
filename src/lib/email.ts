@@ -18,7 +18,7 @@ async function enviarEmail(dados: { para: string; assunto: string; html: string 
   const res = await fetch(`${RESEND_API_BASE}/emails`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${env.RESEND_API_KEY}`,
+      Authorization: `Bearer ${env.RESEND_API_TOKEN}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

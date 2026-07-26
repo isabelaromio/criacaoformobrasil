@@ -35,8 +35,8 @@ export const env = {
   get CLICKUP_WEBHOOK_SECRET() {
     return process.env.CLICKUP_WEBHOOK_SECRET || "";
   },
-  get RESEND_API_KEY() {
-    return required("RESEND_API_KEY");
+  get RESEND_API_TOKEN() {
+    return required("RESEND_API_TOKEN");
   },
   get RESEND_FROM_EMAIL() {
     return process.env.RESEND_FROM_EMAIL || "Formô Brasil <onboarding@resend.dev>";
