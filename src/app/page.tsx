@@ -4,6 +4,7 @@ import { SolicitacaoForm } from "@/components/SolicitacaoForm";
 export default function Home() {
   return (
     <PageShell
+      heroRainbow
       headerRight={
         <span className="hidden items-center gap-1.5 rounded-full bg-navy/10 px-3 py-1 font-mono text-[11px] text-navy/70 sm:flex">
           <span className="h-1.5 w-1.5 rounded-full bg-coral" />

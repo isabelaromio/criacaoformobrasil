@@ -2,21 +2,25 @@ import type { ReactNode } from "react";
 import { FormoLogo } from "@/components/FormoLogo";
 import { PixelCursor } from "@/components/PixelCursor";
 import { BackgroundDecor } from "@/components/BackgroundDecor";
+import { MarqueeTicker } from "@/components/MarqueeTicker";
+import { RainbowSwoosh } from "@/components/RainbowSwoosh";
 
 export function PageShell({
   headerRight,
   mainWidth = "2xl",
   centerVertically = false,
+  heroRainbow = false,
   children,
 }: {
   headerRight?: ReactNode;
   mainWidth?: "md" | "2xl";
   centerVertically?: boolean;
+  heroRainbow?: boolean;
   children: ReactNode;
 }) {
   return (
     <div className="y2k-backdrop relative flex min-h-full flex-1 flex-col">
-      <div className="formo-ribbon" />
+      <MarqueeTicker />
       <BackgroundDecor />
       <div className="y2k-grain" />
 
@@ -38,7 +42,10 @@ export function PageShell({
           mainWidth === "md" ? "max-w-md" : "max-w-2xl"
         } ${centerVertically ? "flex flex-col justify-center" : ""}`}
       >
-        {children}
+        {heroRainbow && (
+          <RainbowSwoosh className="pointer-events-none absolute -top-6 right-0 z-0 h-[420px] w-[560px] max-w-none opacity-90 sm:h-[520px] sm:w-[720px]" />
+        )}
+        <div className="relative z-10">{children}</div>
       </main>
 
       <footer className="relative z-10 flex items-center justify-center gap-2 px-6 py-6 font-mono text-[11px] tracking-wide text-navy/50 sm:px-10">

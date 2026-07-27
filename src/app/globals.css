@@ -60,6 +60,33 @@ body {
   background-size: 200% 100%;
 }
 
+/* Ticker animado no topo (referência: faixa "early bird tickets" de sites
+   de evento) — texto duplicado rolando em loop contínuo */
+.formo-marquee {
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  background: var(--color-navy);
+  white-space: nowrap;
+}
+
+.formo-marquee-track {
+  display: inline-flex;
+  width: max-content;
+  animation: formo-marquee-scroll 26s linear infinite;
+}
+
+@keyframes formo-marquee-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formo-marquee-track {
+    animation: none;
+  }
+}
+
 .y2k-grain {
   position: fixed;
   inset: 0;

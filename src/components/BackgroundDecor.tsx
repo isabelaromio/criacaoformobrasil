@@ -1,5 +1,7 @@
 // Elementos gráficos decorativos no fundo das páginas — puramente visual,
 // sem interação (pointer-events-none) e ocultos de leitores de tela.
+// Personagens (NuvemFeliz, EstrelaFeliz) são ilustrações originais, só
+// inspiradas no espírito alegre/colorido pedido, sem copiar nenhuma marca.
 
 function Estrela({ className }: { className?: string }) {
   return (
@@ -54,17 +56,63 @@ function Coracao({ className }: { className?: string }) {
   );
 }
 
+// Personagem original: nuvem sorridente
+function NuvemFeliz({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 44" className={className} aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M16 34a14 14 0 0 1-1-27.9A16 16 0 0 1 46 8a12 12 0 0 1 2 23.9V32H16Z"
+      />
+      <circle cx="24" cy="24" r="2" fill="#3b4f82" />
+      <circle cx="36" cy="24" r="2" fill="#3b4f82" />
+      <path
+        d="M23 29c2.5 2.5 7.5 2.5 10 0"
+        stroke="#3b4f82"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+// Personagem original: estrela sorridente
+function EstrelaFeliz({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 40 40" className={className} aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M20 0c1.3 8.1 3.8 13.9 7.5 17C31.1 20 35.5 21.4 40 21.7c-4.5.3-8.9 1.7-12.5 4.7-3.7 3.1-6.2 8.9-7.5 17-1.3-8.1-3.8-13.9-7.5-17C8.9 23.4 4.5 22 0 21.7c4.5-.3 8.9-1.7 12.5-4.7C16.2 13.9 18.7 8.1 20 0Z"
+      />
+      <circle cx="17" cy="19" r="1.6" fill="#3b4f82" />
+      <circle cx="24" cy="19" r="1.6" fill="#3b4f82" />
+      <path
+        d="M17 23c1.7 1.7 5.3 1.7 7 0"
+        stroke="#3b4f82"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
 const ITENS: { Icone: typeof Estrela; className: string; flutuar?: boolean }[] = [
-  { Icone: Estrela, className: "top-[6%] left-[5%] h-6 w-6 text-coral/70", flutuar: true },
+  { Icone: Estrela, className: "top-[6%] left-[5%] h-7 w-7 text-coral/80", flutuar: true },
   { Icone: Bolinha, className: "top-[14%] right-[8%] h-3 w-3 text-sky/70" },
-  { Icone: Rabisco, className: "top-[22%] left-[3%] h-4 w-16 text-sage/60 hidden sm:block" },
-  { Icone: Anel, className: "top-[38%] right-[4%] h-10 w-10 text-mustard/60 hidden sm:block", flutuar: true },
-  { Icone: Losango, className: "bottom-[28%] left-[7%] h-5 w-5 text-blush/80 hidden sm:block" },
-  { Icone: Estrela, className: "bottom-[18%] right-[10%] h-4 w-4 text-sky/70" },
-  { Icone: Coracao, className: "bottom-[10%] left-[12%] h-5 w-5 text-coral/50 hidden sm:block" },
-  { Icone: Bolinha, className: "top-[55%] left-[2%] h-2 w-2 text-mustard/80" },
-  { Icone: Rabisco, className: "bottom-[6%] right-[6%] h-3 w-14 text-blush/70 hidden sm:block" },
-  { Icone: Anel, className: "top-[8%] right-[22%] h-5 w-5 text-sage/70" },
+  { Icone: Rabisco, className: "top-[22%] left-[3%] h-4 w-16 text-sage/70 hidden sm:block" },
+  { Icone: Anel, className: "top-[38%] right-[4%] h-11 w-11 text-mustard/70 hidden sm:block", flutuar: true },
+  { Icone: Losango, className: "bottom-[28%] left-[7%] h-6 w-6 text-blush/90 hidden sm:block" },
+  { Icone: Estrela, className: "bottom-[18%] right-[10%] h-5 w-5 text-sky/80" },
+  { Icone: Coracao, className: "bottom-[10%] left-[12%] h-6 w-6 text-coral/60 hidden sm:block" },
+  { Icone: Bolinha, className: "top-[55%] left-[2%] h-2.5 w-2.5 text-mustard/90" },
+  { Icone: Rabisco, className: "bottom-[6%] right-[6%] h-3 w-14 text-blush/80 hidden sm:block" },
+  { Icone: Anel, className: "top-[8%] right-[22%] h-6 w-6 text-sage/80" },
+  { Icone: Estrela, className: "top-[45%] right-[14%] h-3 w-3 text-mustard/80 hidden sm:block" },
+  { Icone: Bolinha, className: "bottom-[42%] right-[3%] h-2 w-2 text-coral/80 hidden sm:block" },
+  { Icone: EstrelaFeliz, className: "top-[28%] right-[6%] h-10 w-10 text-mustard/85 hidden md:block", flutuar: true },
+  { Icone: NuvemFeliz, className: "bottom-[16%] left-[4%] h-12 w-16 text-sky/70 hidden md:block" },
 ];
 
 export function BackgroundDecor() {
